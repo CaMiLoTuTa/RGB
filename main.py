@@ -5,7 +5,6 @@ import time
 from machine import Pin, PWM
 from umqtt.simple import MQTTClient
 
-
 # ?---------------------------[ OBJETOS ]---------------------------------------
 # se instancia un objeto de la clase Timer
 colorRojo = PWM(Pin(5), 500)
@@ -31,25 +30,21 @@ while not sta_if.isconnected():
 # print(" Connected!")
 
 # ?----------------------[ FUNCION RECEPCIÓN EN EL SUB ]---------------------------------------------------------#
-
-
 def sub_cb(topic, msg):
     # print(f"llego el topic: {topic} con el valor {msg}")
     if topic == 'negro/diego':
         fun = msg.decode()
     fun = msg.decode()
     lista = str(fun)
-    listado = lista
 
+    lista = lista.replace("[", "")
+    lista = lista.replace("]", "")
+    lista = lista.replace(" ", "")
+    lista = list(lista.split(','))
 
-    listado = listado.replace("[", "")
-    listado = listado.replace("]", "")
-    listado = listado.replace(" ", "")
-    listado = list(listado.split(','))
-
-    valorR = round(int(listado[0]), 2)
-    valorG = round(int(listado[1]), 2)
-    valorB = round(int(listado[2]), 2)
+    valorR = round(int(lista[0]), 2)
+    valorG = round(int(lista[1]), 2)
+    valorB = round(int(lista[2]), 2)
 
     valorRealR = (valorR-255)*4
     if valorRealR < 0:
@@ -65,7 +60,6 @@ def sub_cb(topic, msg):
     if valorRealB < 0:
         valorRealB *= -1
     colorAzul.duty(valorRealB)
-
 
 # ?----------------------[ CONECTAR BROKER ]---------------------------------------------------------#
 # print("Connecting to MQTT server... ", end="")
